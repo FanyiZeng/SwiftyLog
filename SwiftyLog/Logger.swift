@@ -18,11 +18,11 @@ public enum LoggerLevel: Int {
     
     var name: String {
         switch self {
-            case .info: return "💙i"
-            case .debug: return "💚d"
-            case .warning: return "💛w"
-            case .error: return "❤️e"
-            case .none: return "N"
+            case .info: return ""
+            case .debug: return ""
+            case .warning: return ""
+            case .error: return ""
+            case .none: return ""
         }
     }
 }
@@ -46,6 +46,10 @@ public class Logger: NSObject {
     public var level: LoggerLevel = .none
     public var ouput: LoggerOutput = .debuggerConsole
     public var showThread: Bool = false
+    public var timeFormate : ((Date)->(String)) = { date in
+        return date.iso8601
+    }
+    
     
     // MARK: - Init
     private let isolationQueue = DispatchQueue(label: "com.crafttang.isolation", qos: .background, attributes: .concurrent)
@@ -130,17 +134,17 @@ public class Logger: NSObject {
         
         switch self.ouput {
             case .fileOnly:
-                addToBuffer(text: "\(currentTime.iso8601) \(text)")
+                addToBuffer(text: "\(timeFormate(currentTime)) \(text)")
             case .debuggerConsole:
-                print("\(currentTime.iso8601) \(text)")
+                print("\(timeFormate(currentTime)) \(text)")
             case .deviceConsole:
                 NSLog(text)
             case .debugerConsoleAndFile:
-                print("\(currentTime.iso8601) \(text)")
-                addToBuffer(text: "\(currentTime.iso8601) \(text)")
+                print("\(timeFormate(currentTime)) \(text)")
+                addToBuffer(text: "\(timeFormate(currentTime)) \(text)")
             case .deviceConsoleAndFile:
                 NSLog(text)
-                addToBuffer(text: "\(currentTime.iso8601) \(text)")
+                addToBuffer(text: "\(timeFormate(currentTime)) \(text)")
         }
     }
     
